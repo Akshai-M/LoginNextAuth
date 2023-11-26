@@ -14,6 +14,47 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import GoogleSignInButton from '../GoogleSignInButton';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/use-toast';
+
+const FormSchema = z.object({
+  email: z.string().min(1, 'Email is required').email('Invalid email'),
+  password: z
+    .string()
+    .min(1, 'Password is required')
+    .min(8, 'Password must have more than 8 characters'),
+});
+
+const SignInForm = () => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    const signInData = await signIn('credentials', {
+      email: values.email,
+      password: values.password,
+    });
+    if (signInData?.error) {
+      toast({
+        title: 'Error',
+        description: 'Oops! Something went wrong',
+        variant: 'destructive',
+      });
+    } else {
+      router.refresh();
+      router.push('/admin');
+    }
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='w-full'>
