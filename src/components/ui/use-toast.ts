@@ -101,18 +101,18 @@ export const reducer = (state: State, action: Action): State => {
         })
       }
 
-//       return {
-//         ...state,
-//         toasts: state.toasts.map((t) =>
-//           t.id === toastId || toastId === undefined
-//             ? {
-//                 ...t,
-//                 open: false,
-//               }
-//             : t
-//         ),
-//       }
-//     }
+      return {
+        ...state,
+        toasts: state.toasts.map((t) =>
+          t.id === toastId || toastId === undefined
+            ? {
+                ...t,
+                open: false,
+              }
+            : t
+        ),
+      }
+    }
 //     case "REMOVE_TOAST":
 //       if (action.toastId === undefined) {
 //         return {
